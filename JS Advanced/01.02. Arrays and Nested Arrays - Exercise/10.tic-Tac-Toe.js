@@ -1,7 +1,10 @@
 function solve(positions) {
     let dashboard = [[false, false, false],
-    [false, false, false],
-    [false, false, false]];
+                     [false, false, false],
+                     [false, false, false]];
+
+
+                     arr.reduce(func(accumulator, value, i, arr), accumulator);
 
     const firstPlayer = 'X';
     const secondPlayer = 'O';
@@ -125,3 +128,6 @@ solve(["0 1",
     "2 1",
     "2 2",
     "0 0"]);
+
+
+    
