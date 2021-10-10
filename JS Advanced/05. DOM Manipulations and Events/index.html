@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul>
+        <li>2</li>
+        <li>5</li>
+        <li>8</li>
+        <li>1</li>
+        <li>3</li>
+    </ul>
+    
+    <button id="btn">0</button>
+
+    <script>
+        document.getElementById('btn').addEventListener('click', onClick);
+
+        function onClick() {
+            let currNum = Number(event.target.textContent);
+            let isAltKey = event.altKey;
+
+            if (isAltKey) {
+                btn.textContent = --currNum;
+            }
+            else {
+                btn.textContent = ++currNum;
+            }
+        }
+
+        // const btn = document.getElementById('btn'); 
+        // btn.addEventListener('click', sort);
+
+        // function sort() {
+        //     const ulElement = document.querySelector('body ul');
+        //     const liArr = Array.from(ulElement.children);
+
+        //     const sortedLi = liArr.sort((a, b) => Number(a.textContent) - Number(b.textContent));
+
+        //     for (let li of sortedLi) {
+        //         ulElement.appendChild(li);
+        //     }
+       // }
+    </script>
+</body>
+</html>
