@@ -1,42 +1,61 @@
-const { testNumbers } = require('./testNumbers');
+const { library } = require('./library');
 const { expect } = require('chai');
 
-describe('testNumbers', () => {
-    describe('sumNumber', () => {
-        it('should return undefined if input is invalid', () => {
-            expect(testNumbers.sumNumbers()).to.be.undefined;
-            expect(testNumbers.sumNumbers('test', 'test')).to.be.undefined;
-            expect(testNumbers.sumNumbers([], [])).to.be.undefined;
-            expect(testNumbers.sumNumbers({}, {})).to.be.undefined;
-        });
-
+describe('library tests', () => {
+    describe('calcPriceOfBook', () => {
         it('should works with valid input', () => {
-            expect(testNumbers.sumNumbers(1, 2)).to.equal((3).toFixed(2));
-            expect(testNumbers.sumNumbers(1.5, 2.5)).to.equal((4).toFixed(2));
-            expect(testNumbers.sumNumbers(-1, -2)).to.equal((-3).toFixed(2));
-            expect(testNumbers.sumNumbers(1, -2)).to.equal((-1).toFixed(2));
-            expect(testNumbers.sumNumbers(0, 0)).to.equal((0).toFixed(2));
+            expect(library.calcPriceOfBook('test', 2000)).to.equal('Price of test is 20.00');
+            expect(library.calcPriceOfBook('test', 1980)).to.equal('Price of test is 10.00');
+            expect(library.calcPriceOfBook('test', 1960)).to.equal('Price of test is 10.00');
         });
 
-        describe('numberChecker', () => {
-            it('should throw error if input is invalid', () => {
-                expect(() => testNumbers.numberChecker('test')).to.throw('The input is not a number!');
-            });
+        it('should throw error if input is invalid', () => {
+            expect(() => library.calcPriceOfBook(5, 2000)).to.throw('Invalid input');
+            expect(() => library.calcPriceOfBook(5.50, 2000)).to.throw('Invalid input');
+            expect(() => library.calcPriceOfBook('valid', '2000')).to.throw('Invalid input');
+            expect(() => library.calcPriceOfBook('valid', 2000.50)).to.throw('Invalid input');
+            expect(() => library.calcPriceOfBook('valid', 1900.50)).to.throw('Invalid input');
+            expect(() => library.calcPriceOfBook({}, {})).to.throw('Invalid input');
+            expect(() => library.calcPriceOfBook([], [])).to.throw('Invalid input');
+            expect(() => library.calcPriceOfBook([])).to.throw('Invalid input');
+        });
+    });
 
-            it('should works with valid input', () => {
-                expect(testNumbers.numberChecker('2')).to.equal('The number is even!');
-                expect(testNumbers.numberChecker('0')).to.equal('The number is even!');
-                expect(testNumbers.numberChecker(2)).to.equal('The number is even!');
-                expect(testNumbers.numberChecker('1')).to.equal('The number is odd!');
-                expect(testNumbers.numberChecker(3)).to.equal('The number is odd!');
-            });
+    describe('findBook', () => {
+        it('should find the book with valid input', () => {
+            expect(library.findBook(["Troy", "Life Style", "Torronto"], 'Torronto')).to.equal('We found the book you want.');
+            expect(library.findBook(["Troy"], 'Troy')).to.equal('We found the book you want.');
         });
 
-        describe('averageSumArray', () => {
-            it('should works with valid input', () => {
-                expect(testNumbers.averageSumArray([1, 2, 3])).to.equal(2);
-                expect(testNumbers.averageSumArray([0])).to.equal(0);
-            });
+        it('should throw error if array is empty', () => {
+            expect(() => library.findBook([], 'Troy')).to.throw('No books currently available');
+        });
+
+        it('should throw error if array is empty', () => {
+            expect(library.findBook(["Troy", "Life Style", "Torronto"], 'InvalidBook')).to.equal('The book you are looking for is not here!');
+        });
+    });
+
+    describe('arrangeTheBooks', () => {
+        it('should arrange the books with valid input', () => {
+            expect(library.arrangeTheBooks(5)).to.equal('Great job, the books are arranged.');
+            expect(library.arrangeTheBooks(10)).to.equal('Great job, the books are arranged.');
+            expect(library.arrangeTheBooks(40)).to.equal('Great job, the books are arranged.');
+            expect(library.arrangeTheBooks(0)).to.equal('Great job, the books are arranged.');
+        });
+
+        it('should not arrange the books if no enought space', () => {
+            expect(library.arrangeTheBooks(100)).to.equal('Insufficient space, more shelves need to be purchased.');
+            expect(library.arrangeTheBooks(1000)).to.equal('Insufficient space, more shelves need to be purchased.');
+        });
+
+        it('should throw error if input is invalid', () => {
+            expect(() => library.arrangeTheBooks(5.5)).to.throw('Invalid input');
+            expect(() => library.arrangeTheBooks(-10)).to.throw('Invalid input');
+            expect(() => library.arrangeTheBooks()).to.throw('Invalid input');
+            expect(() => library.arrangeTheBooks([])).to.throw('Invalid input');
+            expect(() => library.arrangeTheBooks({})).to.throw('Invalid input');
+            expect(() => library.arrangeTheBooks('test')).to.throw('Invalid input');
         });
     });
 });
