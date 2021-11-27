@@ -6,8 +6,6 @@ const div = section.querySelector('.container');
 section.remove();
 
 export async function showDetails(id) {
-    
-
     const movie = await getMovieById(id);
 
     section.innerHTML = `<div class="row bg-light text-dark">
