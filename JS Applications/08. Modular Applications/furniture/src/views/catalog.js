@@ -1,6 +1,5 @@
 import { html, until } from '../lib.js';
-import { getAll, getMyItems } from '../api/data.js';
-import { getUserData } from '../util.js';
+import { getAll } from '../api/data.js';
 
 const itemTemplate = (item) => html`
 <div class="col-md-4">
@@ -18,9 +17,9 @@ const itemTemplate = (item) => html`
     </div>
 </div>`;
 
-const catalogTemplate = (dataPromise, userpage) => html`<div class="row space-top">
+const catalogTemplate = (dataPromise) => html`<div class="row space-top">
     <div class="col-md-12">
-        ${userpage ? html`<h1>Welcome to My Publications</h1>` : html`<h1>Welcome to Furniture System</h1>`}
+        <h1>Welcome to Furniture System</h1>
         <p>Select furniture from the catalog to view details.</p>
     </div>
 </div>
@@ -29,20 +28,11 @@ const catalogTemplate = (dataPromise, userpage) => html`<div class="row space-to
 </div>`;
 
 export async function catalogPage(ctx) {
-    const userpage = ctx.pathname == '/my-furniture';
-    ctx.render(catalogTemplate(loadItem(userpage), userpage));
+    ctx.render(catalogTemplate(loadItem()));
 }
 
-async function loadItem(userpage) {
-    let items = [];
-
-    if (userpage) {
-        const userId = getUserData().id;
-        items = await getMyItems(userId);
-    } else {
-        items = await getAll();
-
-    }
+async function loadItem() {
+    const items = await getAll();
 
     return items.map(itemTemplate);
 }

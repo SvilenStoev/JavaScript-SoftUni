@@ -5,8 +5,11 @@ import { editPage } from './views/edit.js';
 import { createPage } from './views/create.js';
 import { loginPage } from './views/login.js';
 import { registerPage } from './views/register.js';
+import { logout } from './api/data.js';
+import { getUserData } from './util.js';
 
 const root = document.querySelector('div.container');
+document.getElementById('logoutBtn').addEventListener('click', onLogout);
 
 page(decorateContext);
 page('/', catalogPage);
@@ -15,12 +18,32 @@ page('/create', createPage);
 page('/edit/:id', editPage);
 page('/register', registerPage);
 page('/login', loginPage);
-page('/my-furniture', () => console.log('my furniture view'));
+page('/my-furniture', catalogPage);  
 
 page.start();
+updateUserNav();
 
 function decorateContext(ctx, next) {
     ctx.render = (content) => render(content, root);
+    ctx.updateUserNav = updateUserNav;
 
     next();
+}
+
+export function updateUserNav() {
+    const userData = getUserData();
+
+    if (userData) {
+        document.getElementById('user').style.display = 'inline-block';
+        document.getElementById('guest').style.display = 'none';
+    } else {
+        document.getElementById('user').style.display = 'none';
+        document.getElementById('guest').style.display = 'inline-block';
+    }
+}
+
+async function onLogout() {
+    await logout();
+    updateUserNav();
+    page.redirect('/');
 }
