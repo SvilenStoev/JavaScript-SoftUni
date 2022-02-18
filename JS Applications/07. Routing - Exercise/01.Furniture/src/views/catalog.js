@@ -25,7 +25,7 @@ const catalogTemplate = (dataPromise, userpage) => html`<div class="row space-to
     </div>
 </div>
 <div class="row space-top">
-    ${until(dataPromise, html`<p>Loading &hellip;</p>`)}
+    ${until(dataPromise)}
 </div>`;
 
 export async function catalogPage(ctx) {
@@ -35,6 +35,7 @@ export async function catalogPage(ctx) {
 
 async function loadItem(userpage) {
     let items = [];
+    SlickLoader.enable();
 
     if (userpage) {
         const userId = getUserData().id;
@@ -43,6 +44,7 @@ async function loadItem(userpage) {
         items = await getAll();
 
     }
+    SlickLoader.disable();
 
     return items.map(itemTemplate);
 }

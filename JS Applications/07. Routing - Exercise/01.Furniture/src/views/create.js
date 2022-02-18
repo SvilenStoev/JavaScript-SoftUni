@@ -65,9 +65,9 @@ export function createPage(ctx) {
         event.preventDefault();
 
         const formData = [...(new FormData(event.target)).entries()];
-        const data = formData.reduce((a, [k, v]) => Object.assign(a, { [k]: v }), {});
+        const data = formData.reduce((a, [k, v]) => Object.assign(a, { [k]: v.trim() }), {});
 
-        const missing = formData.filter(([k, v]) => k != 'material' && v == '');
+        const missing = formData.filter(([k, v]) => k != 'material' && v.trim() == '');
 
         data.year = Number(data.year);
         data.price = Number(data.price);
@@ -120,6 +120,7 @@ export function createPage(ctx) {
             }
 
             const result = await createItem(data);
+            event.target.reset();
             ctx.page.redirect('/details/' + result._id);
         } catch (err) {
             const message = err.message || err.error.message;
