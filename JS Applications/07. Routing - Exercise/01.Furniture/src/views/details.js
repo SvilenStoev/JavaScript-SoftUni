@@ -1,4 +1,4 @@
-import { getById } from '../api/data.js';
+import { deleteItem, getById } from '../api/data.js';
 import { html, until } from '../lib.js';
 import { getUserData } from '../util.js';
 
@@ -12,11 +12,11 @@ const detailsTemplate = (itemPromise) => html`
     ${until(itemPromise, '')}
 </div>`;
 
-const itemTemplate = (item, isOwner) => html`
+const itemTemplate = (item, isOwner, onDelete) => html`
 <div class="col-md-4">
     <div class="card text-white bg-primary">
         <div class="card-body">
-            <img src="${item.img.substring(1)}" />
+            <img src="${item.img}" />
         </div>
     </div>
 </div>
@@ -29,22 +29,32 @@ const itemTemplate = (item, isOwner) => html`
     <p>Material: <span>${item.material}</span></p>
     ${isOwner ? html`<div>
         <a href="/edit/${item._id}" class="btn btn-info">Edit</a>
-        <a href="javascript:void(0)" class="btn btn-red">Delete</a>
+        <a @click=${onDelete} href="javascript:void(0)" class="btn btn-red">Delete</a>
     </div>` : null}
 </div>`;
 
-
 export function detailsPage(ctx) {
-    ctx.render(detailsTemplate(loadItem(ctx.params.id)));
+    const itemId = ctx.params.id;
+
+    ctx.render(detailsTemplate(loadItem(itemId, onDelete)));
+
+    async function onDelete() {
+        const choise = confirm('Are you sure you want to delete this item?');
+
+        if (choise) {
+            await deleteItem(itemId);
+            ctx.page.redirect('/');
+        }
+    }
 }
 
-async function loadItem(id) {
+async function loadItem(itemId, onDelete) {
     SlickLoader.enable();
-    const item = await getById(id);
+    const item = await getById(itemId);
     SlickLoader.disable();
 
-    const userData = getUserData();
+    const userData = getUserData() || {};
     const isOwner = userData.id == item._ownerId;
 
-    return itemTemplate(item, isOwner);
+    return itemTemplate(item, isOwner, onDelete);
 }

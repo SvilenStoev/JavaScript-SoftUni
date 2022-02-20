@@ -7,7 +7,7 @@ const itemTemplate = (item) => html`
     <div class="card text-white bg-primary">
         <div class="card-body">
             <img src="${item.img}" />
-            <p>Description here</p>
+            <p>${item.description}</p>
             <footer>
                 <p>Price: <span>${item.price} $</span></p>
             </footer>
@@ -18,10 +18,15 @@ const itemTemplate = (item) => html`
     </div>
 </div>`;
 
-const catalogTemplate = (dataPromise, userpage) => html`<div class="row space-top">
+const catalogTemplate = (dataPromise, userpage, itemsCount) => html`<div class="row space-top">
     <div class="col-md-12">
-        ${userpage ? html`<h1>Welcome to My Publications</h1>` : html`<h1>Welcome to Furniture System</h1>`}
-        <p>Select furniture from the catalog to view details.</p>
+        ${userpage ? 
+            html`
+            <h1>Welcome to My Publications</h1>
+            <p>Select furniture from your catalog to view details.</p>` 
+            : html`
+            <h1>Welcome to Furniture System</h1>
+            <p>Select furniture from the catalog to view details.</p>`}
     </div>
 </div>
 <div class="row space-top">
@@ -30,21 +35,22 @@ const catalogTemplate = (dataPromise, userpage) => html`<div class="row space-to
 
 export async function catalogPage(ctx) {
     const userpage = ctx.pathname == '/my-furniture';
-    ctx.render(catalogTemplate(loadItem(userpage), userpage));
-}
+    ctx.render(catalogTemplate(loadItem(), userpage));
 
-async function loadItem(userpage) {
-    let items = [];
-    SlickLoader.enable();
+    async function loadItem() {
+        let items = [];
+        SlickLoader.enable();
+    
+        if (userpage) {
+            const userId = getUserData().id;
+            items = await getMyItems(userId);
+        } else {
+            items = await getAll();
+        }
+        
+        SlickLoader.disable();
 
-    if (userpage) {
-        const userId = getUserData().id;
-        items = await getMyItems(userId);
-    } else {
-        items = await getAll();
-
+        return items.map(itemTemplate);
     }
-    SlickLoader.disable();
-
-    return items.map(itemTemplate);
 }
+
